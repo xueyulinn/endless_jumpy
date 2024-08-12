@@ -3,8 +3,7 @@ import settings
 from player import Player
 from background import Background
 
-
-# inialize the game
+# initialize all imported pygame modules
 pygame.init()
 
 # create game window
@@ -20,11 +19,15 @@ background = Background(0, 0, bgImage)
 playerImage = pygame.image.load("./assets/jump.png").convert_alpha()
 player = Player(settings.PLAYERX, settings.PLAYERY, playerImage)
 
+clock = pygame.time.Clock()
 
 running = True
 
 while running:
-
+    
+    clock.tick(settings.FPS)
+    player.move()
+    
     # draw elements
     background.draw(screen)
     player.draw(screen)
@@ -37,5 +40,5 @@ while running:
 
     pygame.display.update()
 
-# means the game is over, so we need to quit pygame
+# uninitialize all pygame modules
 pygame.quit()
