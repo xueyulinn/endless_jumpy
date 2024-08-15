@@ -7,12 +7,14 @@ class Player:
         self.image = pygame.transform.scale(image, (45, 45))
         self.width = 25
         self.height = 40
+        # initialize a rect object at top-left corner of the screen
         self.rect = pygame.Rect(0, 0, self.width, self.height)
+        # repositions the rect to the x and y coordinates
         self.rect.center = (x, y)
         self.velY = 0
         self.flip = False
 
-    def move(self):
+    def move(self, platforms):
         dx = 0
         dy = 0
         key = pygame.key.get_pressed()
@@ -34,6 +36,22 @@ class Player:
         elif self.rect.right + dx > settings.WINDOW_WIDTH:
             dx = settings.WINDOW_WIDTH - self.rect.right
 
+        # check collision with platforms
+        for platform in platforms:
+            # collision in y direction
+            # created a temporary rect object to check collision
+            if platform.rect.colliderect(self.rect.x, self.rect.y + dy,
+                                         self.width, self.height):
+                # check if player is above platform
+                if self.rect.bottom < platform.rect.centery:
+                    # if player is falling
+                    if self.velY > 0:
+                        # avoid the player overlapping with platforms
+                        self.rect.bottom = platform.rect.top
+                        dy = 0
+                        self.velY = -20
+
+        # check collision with ground
         if self.rect.bottom + dy > settings.WINDOW_HEIGHT:
             dy = 0
             self.velY = -20
