@@ -34,19 +34,28 @@ for i in range(settings.MAX_PLATFORMS):
     platforms.add(platform)
 
 
+bgScroll = 0
 clock = pygame.time.Clock()
 
 running = True
-
 while running:
 
     clock.tick(settings.FPS)
-    player.move(platforms)
+    scroll = player.move(platforms)
+
+    bgScroll += scroll
+    if bgScroll >= settings.WINDOW_HEIGHT:
+        bgScroll = 0
 
     # draw elements
-    background.draw(screen)
+    background.draw(screen, bgScroll)
     player.draw(screen)
     platforms.draw(screen)
+
+    platforms.update(scroll)
+
+    pygame.draw.line(screen, (255, 255, 255), (0, settings.SCROLL_THRESH),
+                     (settings.WINDOW_WIDTH, settings.SCROLL_THRESH))
 
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window

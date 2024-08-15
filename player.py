@@ -15,6 +15,7 @@ class Player:
         self.flip = False
 
     def move(self, platforms):
+        scroll = 0
         dx = 0
         dy = 0
         key = pygame.key.get_pressed()
@@ -56,8 +57,14 @@ class Player:
             dy = 0
             self.velY = -20
 
+        if self.rect.top <= settings.SCROLL_THRESH:
+            if self.velY < 0:
+                scroll = -dy
+
         self.rect.left += dx
         self.rect.bottom += dy
+
+        return scroll
 
     def draw(self, screen):
         screen.blit(pygame.transform.flip(self.image, self.flip, False),
