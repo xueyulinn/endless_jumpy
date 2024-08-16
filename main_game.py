@@ -4,7 +4,7 @@ from player import Player
 from background import Background
 from game_platform import Platform
 import random
-
+import os
 
 # initialize all imported pygame modules
 pygame.init()
@@ -38,6 +38,12 @@ fontSmall = pygame.font.SysFont('Lucida Sans', 20)
 fontBig = pygame.font.SysFont('Lucida Sans', 24)
 fadeCount = 0
 
+if os.path.exists('high_score.txt'):
+    with open('high_score.txt', 'r') as f:
+        highScore = int(f.read())
+else:
+    highScore = 0
+
 
 clock = pygame.time.Clock()
 
@@ -58,6 +64,7 @@ while running:
         player.draw(screen)
         platforms.draw(screen)
 
+        # generate platforms randomly
         if len(platforms) < settings.MAX_PLATFORMS:
             pW = random.randint(40, 60)
             pX = random.randint(0, settings.WINDOW_WIDTH-pW)
@@ -68,9 +75,22 @@ while running:
 
         platforms.update(scroll)
 
-        pygame.draw.line(screen, (255, 255, 255), (0, settings.SCROLL_THRESH),
-                         (settings.WINDOW_WIDTH, settings.SCROLL_THRESH))
+        if scroll > 0:
+            score += scroll
 
+        background.drawPanel(score, fontSmall, settings.PANEL_COLOR)
+
+        # draw the high score
+        pygame.draw.line(screen, settings.TEXT_COLOR, (0, score -
+                         highScore+settings.SCROLL_THRESH),
+                         (settings.WINDOW_WIDTH, score -
+                         highScore+settings.SCROLL_THRESH),
+                         3
+                         )
+        background.drawText('Highest Score', fontSmall, settings.TEXT_COLOR, settings.WINDOW_WIDTH-130, score -
+                            highScore+settings.SCROLL_THRESH+2)
+
+        # game over judgement
         if player.rect.top > settings.WINDOW_HEIGHT:
             gameOver = True
 
@@ -84,13 +104,18 @@ while running:
                 # expand from right to left
                 pygame.draw.rect(screen, settings.GAMEOVER_COLOR,
                                  (settings.WINDOW_WIDTH - fadeCount, (y+1)*100, settings.WINDOW_WIDTH, 100))
+        else:
+            background.drawText('GAME OVER', fontBig,
+                                settings.TEXT_COLOR, 130, 200)
+            background.drawText('SCORE: ' + str(score), fontBig,
+                                settings.TEXT_COLOR,  130, 250)
+            background.drawText('PRESS SPACE TO START AGAIN',
+                                fontBig, settings.TEXT_COLOR,  40, 280)
 
-        background.drawText('GAME OVER', fontBig,
-                            settings.TEXT_COLOR, 130, 200)
-        background.drawText('SCORE: ' + str(score), fontBig,
-                            settings.TEXT_COLOR,  130, 250)
-        background.drawText('PRESS SPACE TO START AGAIN',
-                            fontBig, settings.TEXT_COLOR,  40, 280)
+        # update highScore
+        highScore = max(score, highScore)
+        with open('high_score.txt', 'w') as f:
+            f.write(str(highScore))
 
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE]:
@@ -100,6 +125,7 @@ while running:
             score = 0
             player.rect.center = (settings.PLAYERX, settings.PLAYERY)
             fadeCount = 0
+
             # reset platforms
             platforms.empty()
             platform = Platform(settings.WINDOW_WIDTH//2-50,
