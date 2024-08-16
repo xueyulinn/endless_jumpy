@@ -36,6 +36,9 @@ gameOver = False
 score = 0
 fontSmall = pygame.font.SysFont('Lucida Sans', 20)
 fontBig = pygame.font.SysFont('Lucida Sans', 24)
+fadeCount = 0
+
+
 clock = pygame.time.Clock()
 
 
@@ -72,6 +75,16 @@ while running:
             gameOver = True
 
     else:
+        if fadeCount < settings.WINDOW_HEIGHT:
+            fadeCount += 5
+            for y in range(0, 6, 2):
+                # expand from left to right
+                pygame.draw.rect(screen, settings.GAMEOVER_COLOR,
+                                 (0, y*100, fadeCount, 100))
+                # expand from right to left
+                pygame.draw.rect(screen, settings.GAMEOVER_COLOR,
+                                 (settings.WINDOW_WIDTH - fadeCount, (y+1)*100, settings.WINDOW_WIDTH, 100))
+
         background.drawText('GAME OVER', fontBig,
                             settings.TEXT_COLOR, 130, 200)
         background.drawText('SCORE: ' + str(score), fontBig,
@@ -86,7 +99,7 @@ while running:
             scroll = 0
             score = 0
             player.rect.center = (settings.PLAYERX, settings.PLAYERY)
-
+            fadeCount = 0
             # reset platforms
             platforms.empty()
             platform = Platform(settings.WINDOW_WIDTH//2-50,
