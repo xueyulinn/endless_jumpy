@@ -1,4 +1,5 @@
 import pygame
+import settings
 
 
 class Platform(pygame.sprite.Sprite):
@@ -11,3 +12,7 @@ class Platform(pygame.sprite.Sprite):
 
     def update(self, scroll):
         self.rect.y += scroll
+
+        # delete platforms below ground
+        if self.rect.top > settings.WINDOW_HEIGHT:
+            self.kill()

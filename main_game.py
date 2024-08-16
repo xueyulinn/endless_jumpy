@@ -25,13 +25,11 @@ player = Player(settings.PLAYERX, settings.PLAYERY, playerImage)
 platformImage = pygame.image.load("./assets/wood.png").convert_alpha()
 platforms = pygame.sprite.Group()
 
-# create platforms randomly
-for i in range(settings.MAX_PLATFORMS):
-    platformWidth = random.randint(40, 60)
-    platformX = random.randint(0, settings.WINDOW_WIDTH-platformWidth)
-    platformY = i * random.randint(80, 120)
-    platform = Platform(platformX, platformY, platformImage, platformWidth)
-    platforms.add(platform)
+# create platform
+platform = Platform(settings.WINDOW_WIDTH//2-50,
+                    settings.WINDOW_HEIGHT-50, platformImage, 100)
+
+platforms.add(platform)
 
 
 bgScroll = 0
@@ -51,6 +49,14 @@ while running:
     background.draw(screen, bgScroll)
     player.draw(screen)
     platforms.draw(screen)
+
+    if len(platforms) < settings.MAX_PLATFORMS:
+        pW = random.randint(40, 60)
+        pX = random.randint(0, settings.WINDOW_WIDTH-pW)
+        pY = platform.rect.top - random.randint(80, 120)
+        platform = Platform(pX,
+                            pY, platformImage, pW)
+        platforms.add(platform)
 
     platforms.update(scroll)
 
