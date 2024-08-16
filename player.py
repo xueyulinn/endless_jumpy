@@ -52,10 +52,6 @@ class Player:
                         dy = 0
                         self.velY = -20
 
-        # check collision with ground
-        if self.rect.bottom + dy > settings.WINDOW_HEIGHT:
-            dy = 0
-            self.velY = -20
 
         if self.rect.top <= settings.SCROLL_THRESH:
             if self.velY < 0:
