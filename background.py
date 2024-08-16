@@ -18,7 +18,7 @@ class Background:
         self.screen.blit(img, (x, y))
 
     def drawPanel(self, score, font, color):
-        pygame.draw.rect(self.screen, settings.PANEL_COLOR,
+        pygame.draw.rect(self.screen, color,
                          (0, 0, settings.WINDOW_WIDTH, 30))
         pygame.draw.line(self.screen, (255,255,255), (0, 30),
                          (settings.WINDOW_WIDTH, 30), 2)

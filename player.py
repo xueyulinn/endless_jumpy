@@ -22,11 +22,11 @@ class Player:
 
         # process keypresses
         if key[pygame.K_a]:
-            dx = -10
+            dx = -8
             self.flip = True
 
         if key[pygame.K_d]:
-            dx = 10
+            dx = 8
             self.flip = False
 
         self.velY += settings.GRAVITY
@@ -51,7 +51,6 @@ class Player:
                         self.rect.bottom = platform.rect.top
                         dy = 0
                         self.velY = -20
-
 
         if self.rect.top <= settings.SCROLL_THRESH:
             if self.velY < 0:

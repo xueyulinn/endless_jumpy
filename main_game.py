@@ -27,7 +27,7 @@ platforms = pygame.sprite.Group()
 
 # create platform
 platform = Platform(settings.WINDOW_WIDTH//2-50,
-                    settings.WINDOW_HEIGHT-50, platformImage, 100)
+                    settings.WINDOW_HEIGHT-50, platformImage, 100, False)
 platforms.add(platform)
 
 # game variables
@@ -69,11 +69,12 @@ while running:
             pW = random.randint(40, 60)
             pX = random.randint(0, settings.WINDOW_WIDTH-pW)
             pY = platform.rect.top - random.randint(80, 120)
+            pM = random.randint(0, 1)
             platform = Platform(pX,
-                                pY, platformImage, pW)
+                                pY, platformImage, pW, True if pM == 1 else False)
             platforms.add(platform)
 
-        platforms.update(scroll)
+        platforms.update(scroll, score)
 
         if scroll > 0:
             score += scroll
@@ -129,7 +130,7 @@ while running:
             # reset platforms
             platforms.empty()
             platform = Platform(settings.WINDOW_WIDTH//2-50,
-                                settings.WINDOW_HEIGHT-50, platformImage, 100)
+                                settings.WINDOW_HEIGHT-50, platformImage, 100, False)
             platforms.add(platform)
 
     # poll for events
