@@ -1,7 +1,6 @@
 import pygame
 import settings
 
-
 class Player:
     def __init__(self, x, y, image):
         self.image = pygame.transform.scale(image, (45, 45))
@@ -14,7 +13,7 @@ class Player:
         self.velY = 0
         self.flip = False
 
-    def move(self, platforms):
+    def move(self, platforms, sound):
         scroll = 0
         dx = 0
         dy = 0
@@ -45,6 +44,7 @@ class Player:
                                          self.width, self.height):
                 # check if player is above platform
                 if self.rect.bottom < platform.rect.centery:
+                    sound.play()
                     # if player is falling
                     if self.velY > 0:
                         # avoid the player overlapping with platforms

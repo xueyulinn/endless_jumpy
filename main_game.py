@@ -8,14 +8,22 @@ import os
 from sprite_sheet import SpriteSheet
 from enemy import Enemy
 
+
 # initialize all imported pygame modules
 pygame.init()
-
+pygame.mixer.init()
 # create game window
 screen = pygame.display.set_mode(
     (settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT))
 
 pygame.display.set_caption("Jumpy")
+
+# load music and sounds
+pygame.mixer.music.load("./assets/music.mp3")
+pygame.mixer.music.play(-1, 0.0)
+jumpSound = pygame.mixer.Sound("./assets/jump.mp3")
+deathSound = pygame.mixer.Sound("./assets/death.mp3")
+
 
 # load images
 bgImage = pygame.image.load("./assets/bg.png").convert_alpha()
@@ -57,7 +65,7 @@ while running:
     clock.tick(settings.FPS)
 
     if not gameOver:
-        scroll = player.move(platforms)
+        scroll = player.move(platforms, jumpSound)
 
         bgScroll += scroll
         if bgScroll >= settings.WINDOW_HEIGHT:
@@ -105,9 +113,10 @@ while running:
         # game over judgement
         if player.rect.top > settings.WINDOW_HEIGHT:
             gameOver = True
-
+            deathSound.play()
         if pygame.sprite.spritecollide(player, enemies, False, pygame.sprite.collide_mask):
             gameOver = True
+            deathSound.play()
 
     else:
         # game over
