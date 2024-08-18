@@ -75,7 +75,7 @@ while running:
 
         platforms.update(scroll, score)
 
-        if len(enemies) == 0:
+        if len(enemies) == 0 and score > 1500:
             enemy = Enemy(100, birdSheet, 1.5)
             enemies.add(enemy)
 
@@ -104,6 +104,9 @@ while running:
 
         # game over judgement
         if player.rect.top > settings.WINDOW_HEIGHT:
+            gameOver = True
+
+        if pygame.sprite.spritecollide(player, enemies, False, pygame.sprite.collide_mask):
             gameOver = True
 
     else:
@@ -139,7 +142,7 @@ while running:
             player.rect.center = (settings.PLAYERX, settings.PLAYERY)
             fadeCount = 0
             enemies.empty()
-                        
+
             # reset platforms
             platforms.empty()
             platform = Platform(settings.WINDOW_WIDTH//2-50,
