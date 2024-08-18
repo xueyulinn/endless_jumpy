@@ -52,6 +52,12 @@ class Player:
                         dy = 0
                         self.velY = -20
 
+          # Prevent player from jumping higher than the top of the screen
+        if self.rect.top + dy < 0:
+            self.rect.top = 0
+            dy = 0
+            self.velY = 0  # Stop upward movement
+
         if self.rect.top <= settings.SCROLL_THRESH:
             if self.velY < 0:
                 scroll = -dy

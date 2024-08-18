@@ -5,6 +5,8 @@ from background import Background
 from game_platform import Platform
 import random
 import os
+from sprite_sheet import SpriteSheet
+from enemy import Enemy
 
 # initialize all imported pygame modules
 pygame.init()
@@ -24,11 +26,13 @@ player = Player(settings.PLAYERX, settings.PLAYERY, playerImage)
 
 platformImage = pygame.image.load("./assets/wood.png").convert_alpha()
 platforms = pygame.sprite.Group()
-
-# create platform
 platform = Platform(settings.WINDOW_WIDTH//2-50,
                     settings.WINDOW_HEIGHT-50, platformImage, 100, False)
 platforms.add(platform)
+
+enemyImage = pygame.image.load("./assets/bird.png").convert_alpha()
+birdSheet = SpriteSheet(enemyImage)
+enemies = pygame.sprite.Group()
 
 # game variables
 bgScroll = 0
@@ -59,11 +63,6 @@ while running:
         if bgScroll >= settings.WINDOW_HEIGHT:
             bgScroll = 0
 
-        # draw elements
-        background.draw(bgScroll)
-        player.draw(screen)
-        platforms.draw(screen)
-
         # generate platforms randomly
         if len(platforms) < settings.MAX_PLATFORMS:
             pW = random.randint(40, 60)
@@ -75,6 +74,18 @@ while running:
             platforms.add(platform)
 
         platforms.update(scroll, score)
+
+        if len(enemies) == 0:
+            enemy = Enemy(100, birdSheet, 1.5)
+            enemies.add(enemy)
+
+         # draw sprites
+        background.draw(bgScroll)
+        player.draw(screen)
+        platforms.draw(screen)
+        enemies.draw(screen)
+
+        enemies.update(scroll)
 
         if scroll > 0:
             score += scroll
@@ -96,6 +107,7 @@ while running:
             gameOver = True
 
     else:
+        # game over
         if fadeCount < settings.WINDOW_HEIGHT:
             fadeCount += 5
             for y in range(0, 6, 2):
@@ -126,7 +138,8 @@ while running:
             score = 0
             player.rect.center = (settings.PLAYERX, settings.PLAYERY)
             fadeCount = 0
-
+            enemies.empty()
+                        
             # reset platforms
             platforms.empty()
             platform = Platform(settings.WINDOW_WIDTH//2-50,
